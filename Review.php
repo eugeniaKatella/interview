@@ -133,3 +133,6 @@ final class EmploymentTypeRepository
     }
 
 }
+
+class Database implements DatabaseInterface {}
+interface DatabaseInterface {}
