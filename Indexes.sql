@@ -7,9 +7,11 @@ CREATE TABLE `employees` (
                            KEY `age_gender` (`age`,`gender`)
 ) ENGINE=InnoDB;
 
-explain select * from employees where age = 25;
-explain select * from employees where age < 25;
-explain select * from employees where age < 25 and gender = 1;
+select * from employees where age = 25;
+select * from employees where age < 25;
+select * from employees where age = 25 or gender = 1;
+select * from employees where age < 25 and gender = 1;
+select * from employees where gender = 1 and age = 25;
 
 
 

@@ -44,3 +44,21 @@ $b = new Son;
 echo $b->getName();
 echo $b->getStaticName();
 
+
+//third task
+$data = array(1,2,3,4);
+foreach($data as &$entry) {
+
+}
+
+print_r($data);
+
+
+$test = array(10,20,30,40);
+foreach($test AS $entry) {
+
+}
+
+print_r($data);
+
+
