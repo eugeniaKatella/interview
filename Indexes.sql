@@ -10,6 +10,7 @@ CREATE TABLE `employees` (
 select * from employees where age = 25;
 select * from employees where age < 25;
 select * from employees where age = 25 or gender = 1;
+select * from employees where age <= 25 and gender = 1;
 select * from employees where age < 25 and gender = 1;
 select * from employees where gender = 1 and age = 25;
 
@@ -29,6 +30,6 @@ CREATE TABLE `shifts` (
 
 
 select * from shifts where departmentId = 123 and shiftStart > '2020-01-01 00:00:00';
-select * from shifts where departmentId = 123 and shiftStart > '2020-01-01 00:00:00' and shiftEnd < '2021-01-01 00:00:00';
+select * from shifts where departmentId = 123 and shiftStart >= '2020-01-01 00:00:00' and shiftEnd <= '2021-01-01 00:00:00';
 select * from shifts where shiftStart = '2020-01-01 08:00:00';
 
