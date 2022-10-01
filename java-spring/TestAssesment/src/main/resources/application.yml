@@ -1,0 +1,48 @@
+server:
+  port: ${PORT:8010}
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      cors:
+        allowed-methods: GET,POST
+        allowed-origins: "*"
+      base-path: /__manage
+      exposure.include: health, live, prometheus
+  endpoint:
+    health:
+      enabled: true
+      show-details: "always"
+    prometheus.enabled: true
+
+spring:
+  main.banner-mode: "off"
+  jackson:
+    deserialization:
+      ADJUST_DATES_TO_CONTEXT_TIME_ZONE: false
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+
+  h2:
+    console.enabled: true
+    console.path: /h2-console
+    console.settings.trace: false
+    spring.h2.console.settings.web-allow-others: false
+  jpa:
+    hibernate:
+      ddl-auto=update:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+
+petsMaxAge: 15
+
+# Log config
+logging:
+  level:
+    com.quinyx: INFO
+    org.hibernate: WARN
+    org.springframework: WARN
+    org.apache.kafka: WARN
