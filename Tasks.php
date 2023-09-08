@@ -1,7 +1,6 @@
 <?php
 
-
-//first task
+/*start of first snippet*/
 $a = 2;
 $b = 3;
 function t() {
@@ -13,23 +12,20 @@ function t() {
 t();
 t();
 t();
-echo "$a, $b";
+echo "$a, $b\n";
+/*end of first snippet*/
 
-
-
-
-
-//second task
+/*start of second snippet*/
 class Father
 {
     const NAME = 'Father';
 
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }
 
-    public function getStaticName()
+    public function getStaticName(): string
     {
         return static::NAME;
     }
@@ -39,26 +35,25 @@ class Son extends Father
 {
     const NAME = 'Son';
 }
+
 $b = new Son;
 
-echo $b->getName();
-echo $b->getStaticName();
+echo $b->getName() . "\n";
+echo $b->getStaticName() . "\n";
+/*end of second snippet*/
 
-
-//third task
+/*start of third snippet*/
 $data = array(1,2,3,4);
-foreach($data as &$entry) {
+foreach ($data as &$entry) {
 
 }
 
 print_r($data);
-
 
 $test = array(10,20,30,40);
-foreach($test AS $entry) {
+foreach ($test AS $entry) {
 
 }
 
 print_r($data);
-
-
+/*end of third snippet*/

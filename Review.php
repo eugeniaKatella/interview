@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 class SalariesCalculator
 {
-    private array $employeeIds;
+    private $employeeIds;
 
     /**
      * @return array
@@ -25,6 +25,15 @@ class SalariesCalculator
     }
 
     /**
+     * @param array $data
+     * @return void
+     */
+    public function setDepartmentsData(array $data): void
+    {
+        $this->departmentsData = $data;
+    }
+
+    /**
      * @return array
      */
     public function calculatePeriodSalaries(): array
@@ -39,7 +48,12 @@ class SalariesCalculator
 
             $employmentType = $employmentTypeRepository->getEmploymentType($employee['employmentTypeId']);
 
-            $periodSalary = $employee['dailySalary'] * $employmentType['daysInPeriod'] * $employmentType['employmentRate'];
+            $departmentCorrectionFactor = $this->getDepartmentCorrectionFactorByDepartmentId($employee['departmentId']);
+
+            $periodSalary = $employee['dailySalary']
+                * $employmentType['daysInPeriod']
+                * $employmentType['employmentRate']
+                * $departmentCorrectionFactor;
 
             $periodSalaries[$employeeId] = $periodSalary;
         }
@@ -48,12 +62,23 @@ class SalariesCalculator
     }
 
     /**
+     * @param int $departmentId
+     * @return int
+     */
+    private function getDepartmentCorrectionFactorByDepartmentId(int $departmentId): int
+    {
+        return $this->departmentsData[$departmentId]['factor'] ?? 1;
+    }
+
+    /**
      * @param array $employees
      * @param array $departments
      * @return array
+     * @throws Exception
      */
     public function getSalaryReports(array $employees, array $departments): array
     {
+
         foreach ($employees as &$item) {
             $item['hourlySalary'] = $item['dailySalary'] / $departments[$item['departmentId']]['workingHours'];
         }
@@ -63,8 +88,21 @@ class SalariesCalculator
             $salaryTypes[] = $item['salaryType'];
         }
 
-        return $this->generateReports($employees, $salaryTypes);
+        return $this->failIfReportIsCorrupted($this->generateReports($employees, $salaryTypes));
 
+    }
+
+    /**
+     * @param array $report
+     * @return never
+     * @throws Exception
+     */
+    private function failIfReportIsCorrupted(array $report): never
+    {
+        if (isset($report['status']) && $report['status'] === 'OK') {
+            return $report;
+        }
+        throw new Exception('Error generation report. ID - ' . $report['id'] ?? '-');
     }
 
     /**
@@ -110,13 +148,13 @@ final class EmployeeRepository
 
 final class EmploymentTypeRepository
 {
-    protected Database $database;
+    private Database $database;
 
     /**
      * EmploymentTypeRepository constructor.
      * @param DatabaseInterface $database
      */
-    public function __construct(DatabaseInterface $database)
+    public function __construct(private DatabaseInterface $database)
     {
         $this->database = $database;
     }
@@ -134,5 +172,21 @@ final class EmploymentTypeRepository
 
 }
 
+final readonly class DepartmentService
+{
+    private $cache = null;
+
+    public function __construct(
+        private DatabaseInterface $database,
+        protected ExternalApIService $externalAPIService,
+        CacheInterface $cache
+    )
+    {
+        $this->cache = $cache;
+    }
+}
+
 class Database implements DatabaseInterface {}
 interface DatabaseInterface {}
+interface ExternalAPIService {}
+interface CacheInterface {}
